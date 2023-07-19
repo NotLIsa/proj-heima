@@ -1,14 +1,14 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:16:48
- * @LastEditTime: 2023-07-19 14:34:21
+ * @LastEditTime: 2023-07-19 15:12:52
  * @Description: 
  */
 //creaRouter: 创建router实例对象
 //createWebHistory: 创建historyy模式的路由
 import { createRouter,createWebHistory } from "vue-router"
 import Login from '@/views/Login/index.vue'
-import LoginOut from '@/views/LoginOut/index.vue'
+import Layout from '@/views/Layout/index.vue'
 import Home from '@/views/Home/index.vue'
 import Category from '@/views/Catrgory/index.vue'
 const router = createRouter({
@@ -17,7 +17,7 @@ const router = createRouter({
   routes:[
     {
       path:"/",
-      component: LoginOut,
+      component: Layout,
       children:[
         {
           path:"",

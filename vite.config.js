@@ -1,7 +1,7 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 10:26:54
- * @LastEditTime: 2023-07-19 10:50:55
+ * @LastEditTime: 2023-07-19 16:45:54
  * @Description: 
  */
 import { fileURLToPath, URL } from 'node:url'
@@ -11,6 +11,10 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+import Unocss from 'unocss/vite'
+import presetUno from '@unocss/preset-uno'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -22,6 +26,11 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     vue(),
+    Unocss({
+      presets: [
+       presetUno()
+     ]
+     }),
   ],
   resolve: {
     alias: {

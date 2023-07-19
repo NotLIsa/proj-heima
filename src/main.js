@@ -1,5 +1,11 @@
+/*
+ * @Author: zhaoshali
+ * @Date: 2023-07-19 16:46:56
+ * @LastEditTime: 2023-07-19 16:46:56
+ * @Description: 
+ */
 import './assets/main.css'
-
+import 'uno.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'

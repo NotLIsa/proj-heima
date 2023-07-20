@@ -1,7 +1,7 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 10:26:54
- * @LastEditTime: 2023-07-19 16:57:36
+ * @LastEditTime: 2023-07-20 09:33:26
  * @Description: 
  */
 import { fileURLToPath, URL } from 'node:url'
@@ -23,7 +23,9 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver({
+        importStyle:'sass'
+      })],
     }),
     vue(),
     Unocss({

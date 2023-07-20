@@ -1,15 +1,15 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:05:13
- * @LastEditTime: 2023-07-20 09:29:18
+ * @LastEditTime: 2023-07-20 12:08:56
  * @Description: 
 -->
 <script setup>
-const menu = ['关于我们','帮组中心','售后服务','配送与验收','商务合作','搜索推荐','友情链接'];
+const menu = ['关于我们','帮助中心','售后服务','配送与验收','商务合作','搜索推荐','友情链接'];
 </script>
 <template>
   <div>
-    <div class="flex h-full p-40x container m-auto pb-60px">
+    <div class="flex h-full p-40x w-1200px m-auto pb-60px">
       <div class="w-25% h-full items-center justify-center text-center">
         <div class="mb-40px text-gray-400">客户服务</div>
         <div class="flex justify-center items-center">
@@ -59,7 +59,7 @@ const menu = ['关于我们','帮组中心','售后服务','配送与验收','�
     </div>
     <!-- bxs:bowl-hot   bxs:cat    bxs:car-wash -->
     <div class="m-auto bg-[#333]">
-    <div class="container m-auto">
+    <div class="w-1200px m-auto">
       <div class="flex items-center text-20px text-[#f3f4f8] py-40px">
         <div class="w-1/3 flex  justify-center items-center"><div class=" i-carbon:accessibility-alt text-50px inline-block mr-3"></div>价格亲民</div>
         <div class="w-1/3 flex  justify-center items-center"><div class=" i-iconamoon:3d-light text-50px inline-block mr-3"></div>物流快捷</div>
@@ -67,7 +67,7 @@ const menu = ['关于我们','帮组中心','售后服务','配送与验收','�
       </div>
     </div>
       <hr class="w-90% m-auto border-1px border-[#525258]"/>
-      <div class="text-[#81838f] text-sm container m-auto py-20px pt-30px">
+      <div class="text-[#81838f] text-sm w-1200px m-auto py-20px pt-30px">
         <div class="flex justify-center">
           <div v-for="(item,index) in menu" :key="index+'sejg'" class="">
             {{ item }}

@@ -1,7 +1,7 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:05:13
- * @LastEditTime: 2023-07-20 12:08:56
+ * @LastEditTime: 2023-07-20 16:13:21
  * @Description: 
 -->
 <script setup>
@@ -9,7 +9,7 @@ const menu = ['关于我们','帮助中心','售后服务','配送与验收','�
 </script>
 <template>
   <div>
-    <div class="flex h-full p-40x w-1200px m-auto pb-60px">
+    <div class="flex h-full p-40x w-1200px m-auto pb-60px pt-60px">
       <div class="w-25% h-full items-center justify-center text-center">
         <div class="mb-40px text-gray-400">客户服务</div>
         <div class="flex justify-center items-center">

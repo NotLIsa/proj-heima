@@ -1,13 +1,16 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:05:13
- * @LastEditTime: 2023-07-20 12:09:13
+ * @LastEditTime: 2023-07-20 15:49:23
  * @Description: 
 -->
 <script setup>
-import { ref,onMounted } from 'vue';
+import { ref ,onMounted} from 'vue';
 import { Search } from '@element-plus/icons-vue'
-import { getCategory } from '@/apis/testAPI';
+import { useCategoryStore } from '@/store/category';
+const categoryStore = useCategoryStore();
+// const { categoryList, getcategory } = useCategoryStore();
+// import { getCategory } from '@/apis/testAPI';
 // const menu = ['首页','居家','美食','服饰','母婴','首页','居家','美食','首页','杂项'];
 // type menuType = {
 //   children: {
@@ -29,26 +32,27 @@ import { getCategory } from '@/apis/testAPI';
 //     name: string,
 // }
 // const menu:menuType = ref()
-const menu = ref();
+// const menu = ref();
 const input3 = ref('');
-const getcategory = async() => {
-  const res = await getCategory();
-  menu.value = res.result;
-  console.log(menu.value,'resss')
-}
+// const getcategory = async() => {
+//   const res = await getCategory();
+//   menu.value = res.result;
+//   console.log(menu.value,'resss')
+// }
 onMounted(() => {
-  getcategory();
+  categoryStore.getcategory();
+  console.log(categoryStore.categoryList,'categoryList')
 })
-import {useScroll} from '@vueuse/core'
-const y = useScroll(window)
+const curActive = ref(0)
 </script>
 <template>
-  <div class="w-1200px m-auto app-header-sticky" :class="{show:y>78}">
-    <div class="flex h-100px justify-between px-30px">
+  <div class="w-1200px m-auto">
+    <div class="flex h-100px justify-between pt-10px">
      <div class="flex">
       <img src="../assets/image/logo.png" />
-      <div class="flex">
-        <div v-for="(item,index) in menu" :key="index+'sjg'" class="pt-2 lh-100px pl-50px">
+      <div class="flex ml-40px" v-show="categoryStore.categoryList">
+        <div v-for="(item,index) in categoryStore.categoryList" :key="index+'sjg'" class="pt-2 lh-70px font-700 my-15px mx-15px cursor-pointer" :class="curActive===index?'active':''"
+       @click="curActive=index">
          {{ item.name }}
       </div>
       </div>
@@ -70,6 +74,12 @@ const y = useScroll(window)
   
 </template>
 <style lang="scss" scoped>
+.active{
+  color: $xxtColor;
+  font-weight: 700;
+  border-bottom: 2px solid $xxtColor;
+
+}
 .app-header-sticky{ 
   width: 100%;
   height: 80px;
@@ -93,12 +103,13 @@ const y = useScroll(window)
 
 }
 :deep(.el-icon svg){
-  color: #333;
+  color: black;
+  font-weight: 700;
 }
 :deep(.el-input--small .el-input__wrapper){
   border-radius: 40px;
   width:120px;
-  border: 1px solid #dcdfe6;
+  border-bottom: 1px solid #dcdfe6;
   box-shadow: none;
 }
 :deep(.el-input){

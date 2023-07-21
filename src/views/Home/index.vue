@@ -1,19 +1,25 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 14:30:32
- * @LastEditTime: 2023-07-21 12:14:40
+ * @LastEditTime: 2023-07-21 15:28:43
  * @Description: 
 -->
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useCategoryStore } from '@/store/category';
-import { getReCommentAPI, getHotPriceAPI, getFreshGoodsAPI,getGoodsAPI,getBannerAPI } from '@/apis/index'
+import { getReCommentAPI, getHotPriceAPI, getFreshGoodsAPI,getGoodsAPI,getBannerAPI } from '@/apis/index';
+const banners = ref([]);
+const getBanners = async() => {
+  const res =  await getBannerAPI();
+  banners.value = res.result;
+  // console.log(banners.value,'🍡banner--t-15');
+}
 const categoryStore = useCategoryStore();
 const recommendList = ref([]);
 const freshgoodsList = ref([]);
 const hotpriceList = ref([]);
 const goosDataList = ref([]);
-const bannerList = ref([])
+// const bannerList = ref([])
 const getReCommentData = async() => {
   const res = await getReCommentAPI();
   recommendList.value = res.result;
@@ -29,24 +35,19 @@ const getFreshGoodsData = async() => {
   freshgoodsList.value = res.result;
   console.log(freshgoodsList.value,'新鲜好物');
 }
-const getSomeBanners = async(params=2) => {
-  const res = await getBannerAPI({params});
-  bannerList.value = res.result;
-  console.log(bannerList.value,'热门品牌');
-};
 const getGoodsData = async() => {
   const res = await getGoodsAPI();
   goosDataList.value = res.result;
   console.log(goosDataList.value,'详情？');
 }
 onMounted(() => {
+  getBanners();
   categoryStore.getcategory();
   // console.log(categoryStore.categoryList,'categoryList');
   getReCommentData();
   getHotPriceData();
   getFreshGoodsData();
   getGoodsData();
-  getSomeBanners();
 })
 const curActive = ref(-1)
 </script>
@@ -55,7 +56,7 @@ const curActive = ref(-1)
     <!-- 轮播图 -->
     <div class="mt-30px bg-[#F5F5F5]">
       <div class="relative w-1200px m-auto">
-        <swiper />
+        <swiper :banners="banners"/>
         <div class="absolute w-25% box-border bg-black opacity-80 text-white text-18px h-full top-0">
           <div v-for="(item,index) in categoryStore.categoryList" :key="index+'shfd'" @click="curActive=index">
             <div class="flex justify-between py-15px pl-30px pr-15px" :class="curActive===index?'tabActive':''">
@@ -112,7 +113,7 @@ const curActive = ref(-1)
       </div>
       </div>
     <!-- 热门品牌 -->
-    <div>
+    <!-- <div>
       <div class="w-1200px m-auto py-40px">
         <div class="flex justify-between items-center text-[#999]  h-80px">
           <div class="flex text-base">
@@ -129,7 +130,7 @@ const curActive = ref(-1)
         </div>
         
       </div>
-      </div>
+      </div> -->
     <!-- 生鲜 -->
     <div>
       <div class="w-1200px m-auto"  v-for="(item,index) in goosDataList" :key="index+'sjgf'" >

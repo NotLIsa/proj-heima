@@ -1,7 +1,7 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:05:13
- * @LastEditTime: 2023-07-20 15:49:23
+ * @LastEditTime: 2023-07-21 14:32:52
  * @Description: 
 -->
 <script setup>
@@ -43,7 +43,7 @@ onMounted(() => {
   categoryStore.getcategory();
   console.log(categoryStore.categoryList,'categoryList')
 })
-const curActive = ref(0)
+const curActive = ref(-1)
 </script>
 <template>
   <div class="w-1200px m-auto">
@@ -51,10 +51,13 @@ const curActive = ref(0)
      <div class="flex">
       <img src="../assets/image/logo.png" />
       <div class="flex ml-40px" v-show="categoryStore.categoryList">
-        <div v-for="(item,index) in categoryStore.categoryList" :key="index+'sjg'" class="pt-2 lh-70px font-700 my-15px mx-15px cursor-pointer" :class="curActive===index?'active':''"
+        <RouterLink to="/"  class="pt-2 lh-70px font-700 my-15px mx-15px cursor-pointer" :class="curActive===-1?'active':''" @click="curActive=-1">首页</RouterLink>
+        <RouterLink :to="`/category/${item.id}`" v-for="(item,index) in categoryStore.categoryList" :key="index+'sjg'" class="pt-2 lh-70px font-700 my-15px mx-15px cursor-pointer" :class="curActive===index?'active':''"
        @click="curActive=index">
-         {{ item.name }}
-      </div>
+          <div>
+            {{ item.name }}
+          </div>
+        </RouterLink>
       </div>
      </div>
      <div class="flex h-100% items-center pt-2">

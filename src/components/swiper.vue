@@ -1,22 +1,19 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-20 14:35:55
- * @LastEditTime: 2023-07-20 15:59:13
+ * @LastEditTime: 2023-07-21 15:34:16
  * @Description: 
 -->
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { getBannerAPI } from '@/apis/index';
-const banners = ref([]);
-const getBanners = async() => {
-  const res =  await getBannerAPI();
-  banners.value = res.result;
-  console.log(banners.value,'banner');
-}
-onMounted(() => {(
-  getBanners()
-)})
+import { defineProps } from 'vue';
+const props = defineProps({
+  banners: {
+    type: Array, // 属性类型为数组
+    required: true // 设为必需属性
+  }
+});
+
 // type imgurlType = {
 //   hrefUrl: string,
 //   id: number,
@@ -27,10 +24,10 @@ onMounted(() => {(
 <template>
  <div class="home-banner">
   <ElCarousel :interval="5000" arrow="always" height="500px">
-    <ElCarousel-item v-for="(item, index) in banners" :key="index+'sjhfdb'">
-      <div>
+    <ElCarousel-item v-for="(item, index) in props.banners" :key="index+'sjhfdb'">
+      <a :href="item.hrefUrl">
          <img :src="item.imgUrl"/>
-      </div>
+      </a>
     </ElCarousel-item>
   </ElCarousel>
  </div>

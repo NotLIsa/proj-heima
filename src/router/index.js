@@ -1,7 +1,7 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:16:48
- * @LastEditTime: 2023-07-19 15:12:52
+ * @LastEditTime: 2023-07-21 14:25:54
  * @Description: 
  */
 //creaRouter: 创建router实例对象
@@ -24,7 +24,7 @@ const router = createRouter({
           component: Home
         },
         {
-          path:"/category",
+          path:"category/:id",
           component: Category
         }
       ]

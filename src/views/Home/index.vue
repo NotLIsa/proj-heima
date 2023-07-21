@@ -1,19 +1,19 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 14:30:32
- * @LastEditTime: 2023-07-21 11:05:33
+ * @LastEditTime: 2023-07-21 12:14:40
  * @Description: 
 -->
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useCategoryStore } from '@/store/category';
-import { getReCommentAPI, getHotPriceAPI, getFreshGoodsAPI,getGoodsAPI } from '@/apis/index'
+import { getReCommentAPI, getHotPriceAPI, getFreshGoodsAPI,getGoodsAPI,getBannerAPI } from '@/apis/index'
 const categoryStore = useCategoryStore();
 const recommendList = ref([]);
 const freshgoodsList = ref([]);
 const hotpriceList = ref([]);
 const goosDataList = ref([]);
-
+const bannerList = ref([])
 const getReCommentData = async() => {
   const res = await getReCommentAPI();
   recommendList.value = res.result;
@@ -29,6 +29,11 @@ const getFreshGoodsData = async() => {
   freshgoodsList.value = res.result;
   console.log(freshgoodsList.value,'新鲜好物');
 }
+const getSomeBanners = async(params=2) => {
+  const res = await getBannerAPI({params});
+  bannerList.value = res.result;
+  console.log(bannerList.value,'热门品牌');
+};
 const getGoodsData = async() => {
   const res = await getGoodsAPI();
   goosDataList.value = res.result;
@@ -41,6 +46,7 @@ onMounted(() => {
   getHotPriceData();
   getFreshGoodsData();
   getGoodsData();
+  getSomeBanners();
 })
 const curActive = ref(-1)
 </script>
@@ -115,6 +121,13 @@ const curActive = ref(-1)
           </div>
           <div class="cursor-pointer">查看全部 ></div>
         </div>
+        <div class="flex w-100% overflow-hidden">
+          <div class="bg-pink-200" v-for ="(item, index) in bannerList" :key="index+'skjsh'"> 
+          <img class="w-250px h-400px object-cover" :src="item.imgUrl" />
+            {{item.name}}
+        </div>
+        </div>
+        
       </div>
       </div>
     <!-- 生鲜 -->
@@ -129,10 +142,10 @@ const curActive = ref(-1)
         </div>
 
         <div class="flex  my-30px mb-80px h-600px">
-          <img class="w-20%" v-for="(k, i) in item.goods.slice(0,1)" :key="i+'sjh'" :src="k.picture" />
+          <img class="w-20% object-cover" :src="item.picture" />
           <div class="w-80% grid ml-40px grid-cols-4 gap-y-40px gap-x-10px">
-            <div v-for="(m, n) in item.goods.slice(1,item.goods.length-1)" :key="n+'sjdhss'">
-              <img class="w-210px" :src="m.picture"/>
+            <div v-for="(m, n) in item.goods" :key="n+'sjdhss'">
+              <img v-img-lazy="m.picture" class="w-210px object-cover" :src="m.picture"/>
               <div class="truncate">{{ m.name }}</div>
               <div class="truncate">{{ item.children[index].name}}</div>
               <div class="text-red-700 text-20px mt-1">￥{{ m.price }}</div>

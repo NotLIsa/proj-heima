@@ -1,17 +1,18 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 14:30:32
- * @LastEditTime: 2023-07-20 17:10:21
+ * @LastEditTime: 2023-07-21 11:05:33
  * @Description: 
 -->
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useCategoryStore } from '@/store/category';
-import { getReCommentAPI, getHotPriceAPI, getFreshGoodsAPI } from '@/apis/index'
+import { getReCommentAPI, getHotPriceAPI, getFreshGoodsAPI,getGoodsAPI } from '@/apis/index'
 const categoryStore = useCategoryStore();
-const recommendList = ref([])
-const freshgoodsList = ref([])
-const hotpriceList = ref([])
+const recommendList = ref([]);
+const freshgoodsList = ref([]);
+const hotpriceList = ref([]);
+const goosDataList = ref([]);
 
 const getReCommentData = async() => {
   const res = await getReCommentAPI();
@@ -20,20 +21,26 @@ const getReCommentData = async() => {
 };
 const getHotPriceData = async() => {
   const res = await getHotPriceAPI();
-  freshgoodsList.value = res.result;
-  console.log(freshgoodsList.value,'新鲜好物');
+  hotpriceList.value = res.result;
+  console.log(freshgoodsList.value,'热门品牌');
 }
 const getFreshGoodsData = async() => {
   const res = await getFreshGoodsAPI();
-  hotpriceList.value = res.result;
-  console.log(hotpriceList.value,'热门品牌');
+  freshgoodsList.value = res.result;
+  console.log(freshgoodsList.value,'新鲜好物');
+}
+const getGoodsData = async() => {
+  const res = await getGoodsAPI();
+  goosDataList.value = res.result;
+  console.log(goosDataList.value,'详情？');
 }
 onMounted(() => {
   categoryStore.getcategory();
-  console.log(categoryStore.categoryList,'categoryList');
+  // console.log(categoryStore.categoryList,'categoryList');
   getReCommentData();
   getHotPriceData();
   getFreshGoodsData();
+  getGoodsData();
 })
 const curActive = ref(-1)
 </script>
@@ -70,8 +77,8 @@ const curActive = ref(-1)
         </div>
         <!-- 新鲜好物--商品 -->
           <div class="text-center flex justify-between flex-wrap">
-            <div v-for="(item,index) in hotpriceList" :key="index+'dghf'" :title="item.name">
-              <img class="w-295px h-295px bg-pink-200 cursor-pointer" :src="item.picture"/>
+            <div v-for="(item,index) in freshgoodsList" :key="index+'dghf'" :title="item.name">
+              <img v-img-lazy="item.picture" class="w-295px h-295px bg-pink-200 cursor-pointer" :src="item.picture"/>
                <div class="text-18px mt-1 truncate w-280px">{{ item.desc }}</div>
                <div class="text-red-700 font-600 text-20px">￥ {{item.price}}</div>
             </div>
@@ -112,13 +119,32 @@ const curActive = ref(-1)
       </div>
     <!-- 生鲜 -->
     <div>
-      <div class="w-1200px m-auto py-40px">
-        <div class="flex justify-between items-center text-[#999]  h-80px">
+      <div class="w-1200px m-auto"  v-for="(item,index) in goosDataList" :key="index+'sjgf'" >
+        <div class="flex justify-between items-center text-[#999]">
           <div class="flex text-base">
-            <div class="text-[#333] font-600 text-26px">生鲜</div>
+            <div class="text-[#333] font-600 text-26px">{{item.name}}</div>
             <div class="mt-2 ml-20px">国际经典 品质保障</div>
           </div>
           <div class="cursor-pointer">查看全部 ></div>
+        </div>
+
+        <div class="flex  my-30px mb-80px h-600px">
+          <img class="w-20%" v-for="(k, i) in item.goods.slice(0,1)" :key="i+'sjh'" :src="k.picture" />
+          <div class="w-80% grid ml-40px grid-cols-4 gap-y-40px gap-x-10px">
+            <div v-for="(m, n) in item.goods.slice(1,item.goods.length-1)" :key="n+'sjdhss'">
+              <img class="w-210px" :src="m.picture"/>
+              <div class="truncate">{{ m.name }}</div>
+              <div class="truncate">{{ item.children[index].name}}</div>
+              <div class="text-red-700 text-20px mt-1">￥{{ m.price }}</div>
+            </div>
+           
+             <!-- <div class="w-20% bg-pink-200">1</div>
+             
+             <div class="w-20% bg-pink-200">1</div>
+             <div class="w-20% bg-pink-200">1</div>
+             <div class="w-20% bg-pink-200">1</div> -->
+
+          </div>
         </div>
       </div>
     </div>

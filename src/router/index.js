@@ -38,6 +38,12 @@ const router = createRouter({
       path:"/login",
       component: Login
     }
-  ]
+  ],
+  //todo路由滚动行为定制    (在不同路由切换时，可以自动滚动到页面的顶部，而不是停留在原来的位置)
+  scrollBehavior(){
+      return {
+        top: 0
+      }
+  }
 })
 export default router

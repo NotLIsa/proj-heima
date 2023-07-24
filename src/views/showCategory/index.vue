@@ -1,30 +1,77 @@
 <script setup>
-import { ArrowRight } from '@element-plus/icons-vue';
-import { ref, watchEffect } from 'vue';
-import { getCategoryFilterAPI } from '@/apis/category';
-import { useCategoryStore } from '@/store/category';
-const categoryStore = useCategoryStore();
-const childMenu = ref()
-const getchildMenu = async() => {
-  const res = await getCategoryFilterAPI(categoryStore.curCategoryId)
-  childMenu.value = res.result;
-  console.log('😄',childMenu.value)
+import { getCategoryFilterAPI, getSubCategoryAPI } from '@/apis/category'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import GoodsItem from '@/components/GoodsItem.vue'
+// 获取面包屑导航数据
+const categoryData = ref({})
+const route = useRoute()
+const getCategoryData = async () => {
+  const res = await getCategoryFilterAPI(route.params.id)
+  categoryData.value = res.result
 }
-watchEffect(()=>{
-  getchildMenu()
+onMounted(() => getCategoryData())
+
+// 获取基础列表数据渲染
+const goodList = ref([])
+const reqData = ref({
+  categoryId: route.params.id,
+  page: 1,
+  pageSize: 20,
+  sortField: 'publishTime'
 })
+const getGoodList = async () => {
+  const res = await getSubCategoryAPI(reqData.value)
+  console.log(res)
+  goodList.value = res.result.items
+}
+onMounted(() => getGoodList())
+
+
+// tab切换回调
+const tabChange = () => {
+  console.log('tab切换了', reqData.value.sortField)
+  reqData.value.page = 1
+  getGoodList()
+}
+
+// 加载更多
+const disabled = ref(false)
+const load = async () => {
+  console.log('加载更多数据咯')
+  // 获取下一页的数据
+  reqData.value.page++
+  const res = await getSubCategoryAPI(reqData.value)
+  goodList.value = [...goodList.value, ...res.result.items]
+  // 加载完毕 停止监听
+  if (res.result.items.length === 0) {
+    disabled.value = true
+  }
+}
+
 </script>
+
 <template>
-  <div class="bg-[#f5f5f5]">
-    <div class="w-1200px m-auto">
-      <div v-if="childMenu" class="">
-        <el-breadcrumb :separator-icon="ArrowRight" class="py-30px">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item v-if="childMenu.parentName">{{ childMenu?.parentName }}</el-breadcrumb-item>
-          <el-breadcrumb-item v-if="childMenu.name">{{ childMenu.name }}</el-breadcrumb-item>
-        </el-breadcrumb>
+  <div>
+    <!-- 面包屑 -->
+    <div class="bread-container bg-[#f5f5f5] p-30px">
+      <el-breadcrumb separator=">" class="w-1200px m-auto">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: `/category/${categoryData.parentId}` }">{{ categoryData.parentName }}
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="sub-container w-1200px m-auto">
+      <el-tabs v-model="reqData.sortField" @tab-change="tabChange" class="py-10px">
+        <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
+        <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
+        <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
+      </el-tabs>
+      <div class="body text-center grid grid-cols-5 gap-x-50px" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
+        <!-- 商品列表-->
+        <GoodsItem v-for="goods in goodList" :goods="goods" :key="goods.id" />
       </div>
-      <div v-else>暂时没有数据</div>
     </div>
   </div>
 </template>

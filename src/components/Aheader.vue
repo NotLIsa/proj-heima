@@ -1,7 +1,7 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:05:13
- * @LastEditTime: 2023-07-21 14:32:52
+ * @LastEditTime: 2023-07-21 17:12:17
  * @Description: 
 -->
 <script setup>
@@ -41,7 +41,7 @@ const input3 = ref('');
 // }
 onMounted(() => {
   categoryStore.getcategory();
-  console.log(categoryStore.categoryList,'categoryList')
+  // console.log(categoryStore.categoryList,'categoryList')
 })
 const curActive = ref(-1)
 </script>

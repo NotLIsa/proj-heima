@@ -23,22 +23,22 @@ const goosDataList = ref([]);
 const getReCommentData = async() => {
   const res = await getReCommentAPI();
   recommendList.value = res.result;
-  console.log(recommendList.value,'人气推荐');
+  // console.log(recommendList.value,'人气推荐');
 };
 const getHotPriceData = async() => {
   const res = await getHotPriceAPI();
   hotpriceList.value = res.result;
-  console.log(freshgoodsList.value,'热门品牌');
+  // console.log(freshgoodsList.value,'热门品牌');
 }
 const getFreshGoodsData = async() => {
   const res = await getFreshGoodsAPI();
   freshgoodsList.value = res.result;
-  console.log(freshgoodsList.value,'新鲜好物');
+  // console.log(freshgoodsList.value,'新鲜好物');
 }
 const getGoodsData = async() => {
   const res = await getGoodsAPI();
   goosDataList.value = res.result;
-  console.log(goosDataList.value,'详情？');
+  // console.log(goosDataList.value,'详情？');
 }
 onMounted(() => {
   getBanners();

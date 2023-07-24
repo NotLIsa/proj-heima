@@ -16,7 +16,7 @@ export const lazyPlugin = {
         const { stop } = useIntersectionObserver(
         el,
         ([{ isIntersecting }]) => {
-          console.log( isIntersecting, '图片懒加载');
+          // console.log( isIntersecting, '图片懒加载');
           if(isIntersecting){
             //进入视口区域
             el.src = binding.value;

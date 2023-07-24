@@ -14,7 +14,7 @@ import Nav from '@/components/ANav.vue'
   <div class="w-full">
     <Nav />
     <Header />
-    <RouterView />
+    <RouterView :key="$route.fullpath"/>
     <Footer />
   </div>
 </template>

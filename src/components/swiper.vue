@@ -1,12 +1,11 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-20 14:35:55
- * @LastEditTime: 2023-07-21 15:34:16
+ * @LastEditTime: 2023-07-24 17:07:22
  * @Description: 
 -->
 
 <script setup>
-import { defineProps } from 'vue';
 const props = defineProps({
   banners: {
     type: Array, // 属性类型为数组

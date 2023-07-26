@@ -85,9 +85,11 @@ const curActive = ref(-1)
         <!-- 新鲜好物--商品 -->
           <div class="text-center flex justify-between flex-wrap">
             <div v-for="(item,index) in freshgoodsList" :key="index+'dghf'" :title="item.name">
+            <RouterLink :to="`/detail/${item.id}`">
               <img v-img-lazy="item.picture" class="w-295px h-295px bg-pink-200 cursor-pointer" :src="item.picture"/>
-               <div class="text-18px mt-1 truncate w-280px">{{ item.desc }}</div>
-               <div class="text-red-700 font-600 text-20px">￥ {{item.price}}</div>
+              <div class="text-18px mt-1 truncate w-280px">{{ item.desc }}</div>
+              <div class="text-red-700 font-600 text-20px">￥ {{item.price}}</div>
+            </RouterLink>
             </div>
           </div>
       </div>

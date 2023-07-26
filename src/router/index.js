@@ -1,7 +1,7 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 11:16:48
- * @LastEditTime: 2023-07-24 16:52:16
+ * @LastEditTime: 2023-07-24 17:00:23
  * @Description: 
  */
 //creaRouter: 创建router实例对象
@@ -12,6 +12,7 @@ import Layout from '@/views/Layout/index.vue'
 import Home from '@/views/Home/index.vue'
 import Category from '@/views/Catrgory/index.vue'
 import showCategory from '@/views/showCategory/index.vue'
+import detail from '@/views/detail/index.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   //path 和 createWebHistory
@@ -31,7 +32,11 @@ const router = createRouter({
         {
           path:"category/showCategory/:id",
           component: showCategory
-        }
+        },
+        {
+          path:"detail/:id",
+          component: detail
+        },
       ]
     },
     {

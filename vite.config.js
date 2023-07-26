@@ -1,7 +1,7 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 10:26:54
- * @LastEditTime: 2023-07-20 09:33:26
+ * @LastEditTime: 2023-07-24 17:50:42
  * @Description: 
  */
 import { fileURLToPath, URL } from 'node:url'
@@ -17,6 +17,9 @@ import presetUno from '@unocss/preset-uno'
 import presetIcons from '@unocss/preset-icons'
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    hmr: true, // 启用热更新
+  },
   plugins: [
     //按需导入
     AutoImport({

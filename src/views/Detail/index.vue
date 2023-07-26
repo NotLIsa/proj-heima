@@ -1,14 +1,15 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-24 16:57:38
- * @LastEditTime: 2023-07-26 10:15:51
+ * @LastEditTime: 2023-07-26 14:53:15
  * @Description: 
 -->
 <script setup>
 import { getGooddetailAPI } from '@/apis/good';
 import { ref, onMounted } from 'vue';
-import DetailHot from '@/components/DetailHot.vue'
-import XxtImageView from '@/components/XxtImageView.vue'
+import DetailHot from '@/components/DetailHot.vue';
+import XxtImageView from '@/components/XxtImageView.vue';
+import XxtSku from '@/components/XxtSku.vue';
 import { useRoute } from 'vue-router';
 const dataList = ref();
 const route =useRoute()
@@ -20,12 +21,15 @@ const getList = async() => {
 onMounted(() => {
   getList();
 });
-const labelActive = ref(0);
-const picActive = ref(0);
+
 const count = ref(1);
 const goComment = (() => {
 
 })
+/* todo-开始误将  @changeSku="skuChange"写成 @changeSku="skuChange()导致父组件接受数值一直显示undefined */
+const skuChange = (count) => {
+  console.log(count)
+}
 const label = ['无忧退货','快速退款','免费包邮']
 </script>
 <template>
@@ -91,16 +95,8 @@ const label = ['无忧退货','快速退款','免费包邮']
               <span class="green">了解详情</span>
             </div>
           </div>
-
-          <div class="flex items-center my-5px" v-for="(item, index) in dataList?.specs" :key="'shsgf'+index">
-            <div class="w-40px">{{item.name}}</div>
-            <div class="ml-10px flex flex-wrap text-13px text-[#333]">
-              <div v-for="(k, i) in item.values" :key="i+'shgs'" :title="i.name">
-                <img :class="picActive===i ? 'activepic' :'border'" class="cursor-pointer w-40px h-40px pl-15px px-20px py-4px my-4px text-center mx-5px" @click="picActive=i" v-if="k.picture" :src="k.picture" />
-                <div v-else :class="labelActive===i ? 'activepic' :'border'" class="cursor-pointer px-20px py-4px my-4px text-center mx-5px" @click="labelActive=i">{{ k.name }}</div>
-              </div>
-            </div>
-          </div>
+          <!-- sku -->
+          <XxtSku :data="dataList"  @changeSku="skuChange"/>
 
           <div class="flex h-25px text-center my-20px text-18px">
             <div class="countborder h-full w-30px bg-gray-100 cursor-pointer" @click="count--">－</div>

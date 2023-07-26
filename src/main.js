@@ -1,7 +1,7 @@
 /*
  * @Author: zhaoshali
  * @Date: 2023-07-19 16:46:56
- * @LastEditTime: 2023-07-20 19:42:15
+ * @LastEditTime: 2023-07-26 16:30:01
  * @Description: 
  */
 import './assets/main.css';
@@ -23,11 +23,13 @@ import { getCategory } from '@/apis/testAPI';
 //引入懒加载指令插件并且注册
 import { lazyPlugin } from '@/directives';
 
+//引入全局组件插件
+import { componentPlugin } from '@/components/index'
 getCategory().then(res => {
   console.log(res);
 });
 const app = createApp(App) ;
-app.use(createPinia()).use(router).use(lazyPlugin).mount('#app');
+app.use(createPinia()).use(router).use(lazyPlugin).use(componentPlugin).mount('#app');
 //定义全局指令
 
 /**

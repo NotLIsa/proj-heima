@@ -1,7 +1,7 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-24 16:57:38
- * @LastEditTime: 2023-07-26 14:53:15
+ * @LastEditTime: 2023-07-26 16:15:42
  * @Description: 
 -->
 <script setup>
@@ -26,10 +26,15 @@ const count = ref(1);
 const goComment = (() => {
 
 })
+
+let skuObj = {}
 /* todo-开始误将  @changeSku="skuChange"写成 @changeSku="skuChange()导致父组件接受数值一直显示undefined */
-const skuChange = (count) => {
-  console.log(count)
+const skuChange = (sku) => {
+  console.log(sku)
+  skuObj = sku
 }
+
+
 const label = ['无忧退货','快速退款','免费包邮']
 </script>
 <template>
@@ -96,8 +101,7 @@ const label = ['无忧退货','快速退款','免费包邮']
             </div>
           </div>
           <!-- sku -->
-          <XxtSku :data="dataList"  @changeSku="skuChange"/>
-
+          <XxtSku :goods="dataList" @change="skuChange" />
           <div class="flex h-25px text-center my-20px text-18px">
             <div class="countborder h-full w-30px bg-gray-100 cursor-pointer" @click="count--">－</div>
             <div class="countborder h-full px-30px text-16px">{{ count }}</div>

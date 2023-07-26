@@ -1,13 +1,14 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-24 16:57:38
- * @LastEditTime: 2023-07-26 09:51:14
+ * @LastEditTime: 2023-07-26 10:15:51
  * @Description: 
 -->
 <script setup>
 import { getGooddetailAPI } from '@/apis/good';
 import { ref, onMounted } from 'vue';
 import DetailHot from '@/components/DetailHot.vue'
+import XxtImageView from '@/components/XxtImageView.vue'
 import { useRoute } from 'vue-router';
 const dataList = ref();
 const route =useRoute()
@@ -19,7 +20,6 @@ const getList = async() => {
 onMounted(() => {
   getList();
 });
-const curIndex = ref(0);
 const labelActive = ref(0);
 const picActive = ref(0);
 const count = ref(1);
@@ -44,14 +44,7 @@ const label = ['无忧退货','快速退款','免费包邮']
       <div class="bg-white">
         <div class="mt-30px py-30px px-40px flex">
         <div>
-          <div class="h-400px w-500px flex">
-            <img class="w-400px h-400px bg-blue-100" :src="dataList?.mainPictures?.[curIndex]"/>
-            <div class="ml-15px flex flex-col justify-between">
-              <div v-for="(item, index) in dataList?.mainPictures" :key="index + 'shsg'" @mouseenter="curIndex=index">
-                <img :src="item" class="w-70px h-70px"  :class="curIndex===index ? 'activepic' : 'pic'"/>
-              </div>
-            </div>
-          </div>
+        <XxtImageView :data="dataList?.mainPictures"/>
           <div class="my-20px flex text-14px w-400px justify-between items-center text-[#666]">
             <div class="flex flex-col justify-between items-center">
               <div class="count">销量人气</div>

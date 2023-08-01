@@ -1,227 +1,99 @@
-<template>
-  <div class="goods-sku">
-    <dl v-for="item in goods.specs" :key="item.id">
-      <dt>{{ item.name }}</dt>
-      <dd>
-        <template v-for="val in item.values" :key="val.name">
-          <img :class="{ selected: val.selected, disabled: val.disabled }" @click="clickSpecs(item, val)"
-            v-if="val.picture" :src="val.picture" />
-          <span :class="{ selected: val.selected, disabled: val.disabled }" @click="clickSpecs(item, val)" v-else>{{
-              val.name
-          }}</span>
-        </template>
-      </dd>skusemit
-    </dl>
-  </div>
-</template>
-<script>
-import { watchEffect } from 'vue'
-const spliter = '★'
-
-function bwPowerSet (originalSet) {
-  const subSets = []
-
-  // We will have 2^n possible combinations (where n is a length of original set).
-  // It is because for every element of original set we will decide whether to include
-  // it or not (2 options for each set element).
-  const numberOfCombinations = 2 ** originalSet.length
-
-  // Each number in binary representation in a range from 0 to 2^n does exactly what we need:
-  // it shows by its bits (0 or 1) whether to include related element from the set or not.
-  // For example, for the set {1, 2, 3} the binary number of 0b010 would mean that we need to
-  // include only "2" to the current set.
-  for (let combinationIndex = 0; combinationIndex < numberOfCombinations; combinationIndex += 1) {
-    const subSet = []
-
-    for (let setElementIndex = 0; setElementIndex < originalSet.length; setElementIndex += 1) {
-      // Decide whether we need to include current element into the subset or not.
-      if (combinationIndex & (1 << setElementIndex)) {
-        subSet.push(originalSet[setElementIndex])
-      }
-    }
-
-    // Add current subset to the list of all subsets.
-    subSets.push(subSet)
+<!--
+ * @Author: zhaoshali
+ * @Date: 2023-07-31 11:59:16
+ * @LastEditTime: 2023-08-01 09:42:10
+ * @Description: 
+-->
+<script setup>
+import { ref, onMounted } from 'vue';
+import powerSet from '@/composable/power-set'
+const props = defineProps(['goods'])
+const labelActive = ref(0);
+// const picActive = ref(0);
+const emits = defineEmits(['change']);
+// const selectspecs = ref();
+//切换选中状态
+const changeSelectedStatus = (item, k) => {
+  //不可选中直接返回
+  if(k.disabled) return
+  
+  emits('change', labelActive.value);
+  if (k.selected) {
+    k.selected = false;
+  } else {
+    item?.values.forEach((value) => (value.selected = false));
+    k.selected = true;
   }
+  const pathMap = getPathMap(props.goods)
+  // const selecArr = item?.values.find((value) => value.selected);
+  // selectspecs.value = goods.specs;
+  console.log(pathMap, 'pathMap==========');
+  console.log(props.goods.specs, 'props==========');
+  initDisabledStatus(props.goods.specs,pathMap)
 }
-// 根据skus数据得到路径字典对象
-const getPathMap = (skus) => {
+//生成有效的路径字典对象
+const getPathMap = (goods) => {
   const pathMap = {}
-  if (skus && skus.length > 0) {
-    skus.forEach(sku => {
-      // 1. 过滤出有库存有效的sku
-      if (sku.inventory) {
-        // 2. 得到sku属性值数组
-        const specs = sku.specs.map(spec => spec.valueName)
-        // 3. 得到sku属性值数组的子集
-        const powerSet = bwPowerSet(specs)
-        // 4. 设置给路径字典对象
-        powerSet.forEach(set => {
-          const key = set.join(spliter)
-          // 如果没有就先初始化一个空数组
-          if (!pathMap[key]) {
-            pathMap[key] = []
-          }
-          pathMap[key].push(sku.id)
-        })
+  //1.根据skkus字段生成有效的skus数组
+  const effectiveSkus = goods.skus.filter(sku => sku.inventory > 0)
+  //2.根据有效的sku使用算法（子集算法[1,2] => [1], [2,], [1,2]）
+  effectiveSkus.forEach(sku => {
+    //2.1获取匹配的valueName组成的数组
+    const selectedValArr = sku.specs.map(k => k.valueName)
+    //2.2使用power算法获取子集
+    const valueArrPowerSet = powerSet(selectedValArr)
+    //3.把得到的子集生成最终的路径字典对象
+    valueArrPowerSet.forEach(arr=>{
+      //初始化key 数组join => 字符串 对象的key
+      const key = arr.join('-')
+      //如果已经存在当前key了 就往数组中直接添加skuID 如果不存在key 直接做赋值
+      if(pathMap[key]){
+        pathMap[key].push(sku.id)
+      }else{
+        pathMap[key] = [sku.id]
       }
     })
-  }
+  })
   return pathMap
 }
-
-// 初始化禁用状态
-function initDisabledStatus (specs, pathMap) {
-  if (specs && specs.length > 0) {
-    specs.forEach(spec => {
-      spec.values.forEach(val => {
-        // 设置禁用状态
-        val.disabled = !pathMap[val.name]
-      })
-    })
-  }
-}
-
-// 得到当前选中规格集合
-const getSelectedArr = (specs) => {
-  const selectedArr = []
-  specs.forEach((spec, index) => {
-    const selectedVal = spec.values.find(val => val.selected)
-    if (selectedVal) {
-      selectedArr[index] = selectedVal.name
-    } else {
-      selectedArr[index] = undefined
-    }
-  })
-  return selectedArr
-}
-
-// 更新按钮的禁用状态
-const updateDisabledStatus = (specs, pathMap) => {
-  // 遍历每一种规格
-  specs.forEach((item, i) => {
-    // 拿到当前选择的项目
-    const selectedArr = getSelectedArr(specs)
-    // 遍历每一个按钮
-    item.values.forEach(val => {
-      if (!val.selected) {
-        selectedArr[i] = val.name
-        // 去掉undefined之后组合成key
-        const key = selectedArr.filter(value => value).join(spliter)
-        val.disabled = !pathMap[key]
+//初始化禁用状态
+const initDisabledStatus = (specs, pathMap) => {
+  specs.forEach(spec => {
+    spec.values.forEach(val => {
+      if(pathMap[val.name]){
+        val.disabled = false
+      }else{
+        val.disabled = true
       }
     })
   })
 }
-
-
-export default {
-  name: 'XtxGoodSku',
-  props: {
-    // specs:所有的规格信息  skus:所有的sku组合
-    goods: {
-      type: Object,
-      default: () => ({ specs: [], skus: [] })
-    }
-  },
-  emits: ['change'],
-  setup (props, { emit }) {
-    let pathMap = {}
-    watchEffect(() => {
-      // 得到所有字典集合
-      pathMap = getPathMap(props.goods.skus)
-      // 组件初始化的时候更新禁用状态
-      initDisabledStatus(props.goods.specs, pathMap)
-    })
-
-    const clickSpecs = (item, val) => {
-      if (val.disabled) return false
-      // 选中与取消选中逻辑
-      if (val.selected) {
-        val.selected = false
-      } else {
-        item.values.forEach(bv => { bv.selected = false })
-        val.selected = true
-      }
-      // 点击之后再次更新选中状态
-      updateDisabledStatus(props.goods.specs, pathMap)
-      // 把选择的sku信息传出去给父组件
-      // 触发change事件将sku数据传递出去
-      const selectedArr = getSelectedArr(props.goods.specs).filter(value => value)
-      // 如果选中得规格数量和传入得规格总数相等则传出完整信息(都选择了)
-      // 否则传出空对象
-      if (selectedArr.length === props.goods.specs.length) {
-        // 从路径字典中得到skuId
-        const skuId = pathMap[selectedArr.join(spliter)][0]
-        const sku = props.goods.skus.find(sku => sku.id === skuId)
-        // 传递数据给父组件
-        emit('change', {
-          skuId: sku.id,
-          price: sku.price,
-          oldPrice: sku.oldPrice,
-          inventory: sku.inventory,
-          specsText: sku.specs.reduce((p, n) => `${p} ${n.name}：${n.valueName}`, '').trim()
-        })
-      } else {
-        emit('change', {})
-      }
-    }
-    return { clickSpecs }
-  }
-}
+onMounted(() => {})
 </script>
-
-<style scoped lang="scss">
-@mixin sku-state-mixin {
-  border: 1px solid #e4e4e4;
-  margin-right: 10px;
-  cursor: pointer;
-
-  &.selected {
-    border-color: $xxtColor;
-  }
-
-  &.disabled {
-    opacity: 0.6;
-    border-style: dashed;
-    cursor: not-allowed;
-  }
+<template>
+  <div class="flex items-center my-5px" v-for="(item, index) in goods?.specs" :key="'shsgf'+index">
+    <div class="w-40px">{{item.name}}</div>
+    <div class="ml-10px flex flex-wrap text-13px text-[#333]">
+      <div v-for="(k, i) in item.values" :key="i+'shgs'" :title="i.name">
+        <img v-if="k.picture" :class="{activepic:k.selected,disabled:k.disabled}" class="border w-40px h-40px" @click="changeSelectedStatus(item,k)" :src="k.picture" :title="k.name"/>
+        <div v-else :class="k.selected? 'activepic':''" class="border px-20px py-4px" :title="k.name" @click="changeSelectedStatus(item,k)">{{ k.name }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+<style lang="scss" scoped>
+.activepic{
+  border: 1px solid $xxtColor!important;
 }
-
-.goods-sku {
-  padding-left: 10px;
-  padding-top: 20px;
-
-  dl {
-    display: flex;
-    padding-bottom: 20px;
-    align-items: center;
-
-    dt {
-      width: 50px;
-      color: #999;
-    }
-
-    dd {
-      flex: 1;
-      color: #666;
-
-      >img {
-        width: 50px;
-        height: 50px;
-        margin-bottom: 4px;
-        @include sku-state-mixin;
-      }
-
-      >span {
-        display: inline-block;
-        height: 30px;
-        line-height: 28px;
-        padding: 0 20px;
-        margin-bottom: 4px;
-        @include sku-state-mixin;
-      }
-    }
-  }
+.disabled{
+  background: pink;
+}
+.border{
+  text-align: center;
+  margin: 4px 5px;
+  cursor: pointer;
+  border: 1px solid rgb(218, 206, 206);
+  box-sizing: border-box;
+  border-radius: 4px;
 }
 </style>

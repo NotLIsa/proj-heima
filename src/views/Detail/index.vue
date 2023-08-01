@@ -1,7 +1,7 @@
 <!--
  * @Author: zhaoshali
  * @Date: 2023-07-24 16:57:38
- * @LastEditTime: 2023-07-26 16:15:42
+ * @LastEditTime: 2023-07-31 17:46:08
  * @Description: 
 -->
 <script setup>
@@ -31,7 +31,7 @@ let skuObj = {}
 /* todo-开始误将  @changeSku="skuChange"写成 @changeSku="skuChange()导致父组件接受数值一直显示undefined */
 const skuChange = (sku) => {
   console.log(sku)
-  skuObj = sku
+  skuObj.value = sku
 }
 
 
